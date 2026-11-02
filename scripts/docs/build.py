@@ -159,6 +159,9 @@ def inline(text):
 
 
 def preprocess(text, src, stash):
+    # The README's badge rows are for GitHub: the site has these links already, and loads nothing from
+    # other sites.
+    text = re.sub(r'<p align="center">(?:(?!</p>).)*img\.shields\.io.*?</p>\n?', "", text, flags=re.S)
     # Fenced code first, so nothing below touches it.
     text = re.sub(r"^```(\w*)\n(.*?)^```\s*$",
                   lambda m: stash.put(render_code(m.group(1), m.group(2))), text, flags=re.S | re.M)

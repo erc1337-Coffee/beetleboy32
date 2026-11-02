@@ -1,5 +1,22 @@
 # BeetleBoy32
 
+<p align="center">
+  <a href="https://beetleboy32.love"><img alt="docs: beetleboy32.love" src="https://img.shields.io/badge/docs-beetleboy32.love-3fb950?style=flat"></a>
+  <a href="https://www.remilia.net"><img alt="play on: remilia.net" src="https://img.shields.io/badge/play%20on-remilia.net-e8467c?style=flat"></a>
+  <a href="LICENSE"><img alt="license: VPL" src="https://img.shields.io/badge/license-VPL-8957e5?style=flat"></a>
+</p>
+<p align="center">
+  <img alt="ESP32-S3" src="https://img.shields.io/badge/ESP32--S3-E7352C?style=flat&logo=espressif&logoColor=white">
+  <img alt="C++17" src="https://img.shields.io/badge/C%2B%2B17-00599C?style=flat&logo=cplusplus&logoColor=white">
+  <img alt="PlatformIO" src="https://img.shields.io/badge/PlatformIO-F5822A?style=flat&logo=platformio&logoColor=white">
+  <img alt="Arduino" src="https://img.shields.io/badge/Arduino-00878F?style=flat&logo=arduino&logoColor=white">
+  <img alt="LVGL 9.2" src="https://img.shields.io/badge/LVGL%209.2-343839?style=flat">
+  <img alt="LovyanGFX" src="https://img.shields.io/badge/LovyanGFX-2b2d33?style=flat">
+  <img alt="ArduinoJson 7" src="https://img.shields.io/badge/ArduinoJson%207-2b2d33?style=flat">
+  <img alt="SDL2 simulator on macOS" src="https://img.shields.io/badge/SDL2%20sim-1d4ed8?style=flat&logo=apple&logoColor=white">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white">
+</p>
+
 > [!WARNING]
 > **Experimental prototype.** A hobby build, provided as is, with no warranty: use it at your own risk.
 > - **Battery:** a lithium (LiPo) cell in a 3D-printed case. Use a protected cell, don't charge it unattended, and stop using it if it swells, heats up or gets damaged.
