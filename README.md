@@ -64,7 +64,7 @@ On first boot, BeetleBoy32 walks you through connecting to Wi-Fi and signing in,
 
 ## License
 
-[Viral Public License](LICENSE). The Remilia artwork in `assets/` is used under the same license.
+[Viral Public License](LICENSE).
 
 ## Demo
 
