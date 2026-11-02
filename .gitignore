@@ -1,0 +1,21 @@
+.pio/
+.vscode/
+.DS_Store
+__pycache__/
+
+# Generated at build time from assets/ (scripts/assets.py)
+src/assets/
+
+# Your own data: the sim's saved account and Wi-Fi, request captures with cookies
+sim_data/
+*.curl
+*.log
+website/
+
+# The demo video's working files, made and kept locally (demo/tools/README.md)
+demo/tools/
+demo/raw/
+demo/screenshots/
+demo/videos/
+demo/*.mp4
+demo/*.jpg

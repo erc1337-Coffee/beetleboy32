@@ -1,0 +1,22 @@
+{
+  "name": "libwebp",
+  "version": "1.4.0",
+  "description": "Google libwebp, decoder only (vendored from github.com/webmproject/libwebp v1.4.0, BSD license, see COPYING)",
+  "build": {
+    "srcDir": "src",
+    "includeDir": ".",
+    "srcFilter": [
+      "+<dec/*.c>",
+      "+<utils/*.c>",
+      "-<utils/bit_writer_utils.c>",
+      "-<utils/huffman_encode_utils.c>",
+      "-<utils/quant_levels_utils.c>",
+      "+<dsp/*.c>",
+      "-<dsp/cost*.c>",
+      "-<dsp/enc*.c>",
+      "-<dsp/lossless_enc*.c>",
+      "-<dsp/ssim*.c>"
+    ],
+    "flags": ["-w"]
+  }
+}

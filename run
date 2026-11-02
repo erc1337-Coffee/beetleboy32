@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# BeetleBoy32's commands, in one place. `./run` alone lists them.
+set -euo pipefail
+cd "$(dirname "$0")"
+
+SIM_PROGRAM=.pio/build/sim/program
+BOARD_ENV=waveshare
+
+usage() {
+  cat <<'EOF'
+Usage: ./run <command>
+
+  sim        Build and start the simulator (a window on this Mac)
+  build      Build the firmware for the board
+  flash      Build and flash the board over USB (first port found, or PORT=...)
+  monitor    Show the board's serial log (opening the port restarts the board)
+  clean      Delete build output (sim and board)
+  check      Build both targets, to see that everything compiles
+
+Simulator keys: mouse = touch, Esc = Cancel (hold 3 s = reset), Enter = OK, Tab = Next,
+J = phone joins setup network, S / W = submit setup (good / wrong Wi-Fi password), D = drop Wi-Fi.
+EOF
+}
+
+# The board's USB serial port: PORT if set, else the first one plugged in.
+board_port() {
+  if [[ -n ${PORT:-} ]]; then echo "$PORT"; return; fi
+  local port
+  port=$(ls /dev/cu.usbmodem* /dev/ttyACM* 2>/dev/null | head -1 || true)
+  if [[ -z $port ]]; then echo "No board found: plug it in, or set PORT=/dev/..." >&2; exit 1; fi
+  echo "$port"
+}
+
+case "${1:-}" in
+  sim)
+    pio run -e sim | grep -v "ranlib: warning" || exit 1
+    exec "$SIM_PROGRAM"
+    ;;
+  build) pio run -e "$BOARD_ENV" ;;
+  flash) pio run -e "$BOARD_ENV" -t upload --upload-port "$(board_port)" ;;
+  monitor) pio device monitor -e "$BOARD_ENV" --port "$(board_port)" ;;
+  clean) pio run -e sim -t clean && pio run -e "$BOARD_ENV" -t clean ;;
+  check) pio run -e sim && pio run -e "$BOARD_ENV" ;;
+  ""|-h|--help|help) usage ;;
+  *) echo "Unknown command: $1" >&2; usage >&2; exit 1 ;;
+esac
