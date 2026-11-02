@@ -5,6 +5,7 @@ cd "$(dirname "$0")"
 
 SIM_PROGRAM=.pio/build/sim/program
 BOARD_ENV=waveshare
+DOCS_PORT=4000
 
 usage() {
   cat <<'EOF'
@@ -16,8 +17,9 @@ Usage: ./run <command>
   monitor    Show the board's serial log (opening the port restarts the board)
   clean      Delete build output (sim and board)
   check      Build both targets, to see that everything compiles
+  docs       Build the docs website into website/ and serve it at http://localhost:4000
 
-Simulator keys: mouse = touch, Esc = Cancel (hold 3 s = reset), Enter = OK, Tab = Next,
+Simulator keys: mouse = touch, Esc = Back (hold 3 s = factory reset), Enter = OK, Tab = Next,
 J = phone joins setup network, S / W = submit setup (good / wrong Wi-Fi password), D = drop Wi-Fi.
 EOF
 }
@@ -41,6 +43,11 @@ case "${1:-}" in
   monitor) pio device monitor -e "$BOARD_ENV" --port "$(board_port)" ;;
   clean) pio run -e sim -t clean && pio run -e "$BOARD_ENV" -t clean ;;
   check) pio run -e sim && pio run -e "$BOARD_ENV" ;;
+  docs)
+    python3 scripts/docs/build.py
+    echo "http://localhost:$DOCS_PORT"
+    exec python3 -m http.server "$DOCS_PORT" --bind 127.0.0.1 -d website
+    ;;
   ""|-h|--help|help) usage ;;
   *) echo "Unknown command: $1" >&2; usage >&2; exit 1 ;;
 esac

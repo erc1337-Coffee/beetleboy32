@@ -243,11 +243,7 @@ void hal_doze(bool on) {
 // Waking by touch is unverified on the board: with the screen off but the chip awake, the touch
 // line didn't change on a tap.
 bool hal_light_sleep(uint32_t max_ms, HalWake &wake) {
-  static const gpio_num_t WAKE_PINS[] = {(gpio_num_t)PIN_TP_INT, (gpio_num_t)PIN_BTN_CANCEL, (gpio_num_t)PIN_BTN_OK,
-#ifdef PIN_BTN_NEXT
-                                         (gpio_num_t)PIN_BTN_NEXT,
-#endif
-  };  // all active low
+  static const gpio_num_t WAKE_PINS[] = {(gpio_num_t)PIN_TP_INT};  // active low
   esp_sleep_enable_timer_wakeup((uint64_t)max_ms * 1000);
   for (gpio_num_t pin : WAKE_PINS) gpio_wakeup_enable(pin, GPIO_INTR_LOW_LEVEL);
   esp_sleep_enable_gpio_wakeup();

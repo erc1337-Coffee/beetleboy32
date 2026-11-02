@@ -20,9 +20,9 @@ src/
   account/          remilia.net: sign-in (Keycloak), profile, the beetle game, pokes
   services/         interfaces each platform implements: storage, Wi-Fi, HTTP, setup network
   portal/           the setup web page, shared by the board and the sim
-  input/            touch and buttons, as one stream of input events
+  input/            touch (and the sim's debug keys), as one stream of input events
   media/            images decoded at runtime, buzzer tunes, LED effects
-  hal/              hardware primitives (time, display, buttons, sleep...)
+  hal/              hardware primitives (time, display, sleep...)
   platform/esp32/   the board's implementations
   platform/sim/     the simulator's implementations
   util/             Job: runs network and decoding work on a background thread
@@ -41,7 +41,7 @@ Only `platform/` differs between the board and the simulator. Everything else co
 - **Screens are views.** They draw and call `App` methods. They never touch services or switch screens on their own.
 - **Navigation is deferred.** The screen stack applies push, pop and replace in its `update()`, so a screen can close itself from its own button.
 - **Each screen has its own focus group**, so button focus never leaks between screens.
-- **All input goes through `Controller`.** Focusable widgets handle their own clicks (a tap or OK). Other input goes to the screen's `onInput()` first, then to App: Back closes the top screen, holding Cancel resets.
+- **All input goes through `Controller`.** Focusable widgets handle their own clicks. Other input goes to the screen's `onInput()` first, then to App: Back closes the top screen.
 - **Slow work runs in a `Job`** (network, image decoding) on the other core. The main loop polls for the result; jobs never touch LVGL.
 - **Tunables go at the top of each file** as named constants: sizes, timings, colors, limits.
 

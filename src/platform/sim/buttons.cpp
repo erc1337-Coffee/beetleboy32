@@ -2,8 +2,8 @@
 
 #include <SDL.h>
 
-// Keyboard stands in for the physical buttons. LVGL's SDL driver pumps the
-// event queue, so SDL's keyboard state is already current here.
+// Debug keys (the board has no buttons): Esc = Cancel, Enter = OK, Tab or Right = Next. LVGL's SDL
+// driver pumps the event queue, so SDL's keyboard state is already current here.
 
 void buttons_begin() {}
 

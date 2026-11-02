@@ -495,7 +495,7 @@ void App::requestReset() {
   screens_.push(std::make_unique<MessageScreen>(
       *this, RESET_SCREEN, "Reset BeetleBoy32?", "Wi-Fi and account details will be erased.",
       std::vector<MessageScreen::Action>{
-          {"Keep", dismiss},  // first = focused, so a blind OK press is harmless
+          {"Keep", dismiss},
           {"Erase", [this] { factoryReset(); }},
       },
       dismiss));

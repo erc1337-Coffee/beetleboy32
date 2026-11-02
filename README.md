@@ -35,9 +35,9 @@ On first boot, BeetleBoy32 walks you through connecting to Wi-Fi and signing in,
 
 ## Docs
 
-- [Hardware](docs/hardware.md): the board, pins, optional buttons and LEDs, power behaviour
+- [Hardware](docs/hardware.md): the board, pins, optional LEDs, power behaviour
 - [Simulator](docs/simulator.md): running it, keys, saved data, environment variables
-- [Setup and login](docs/setup-and-login.md): first setup, what's stored on the device, factory reset
+- [Setup and login](docs/setup-and-login.md): first setup, what's stored on the device, erasing it
 - [Code](docs/code.md): how the code is organized, and how to add screens, images and fonts
 - [Roadmap](ROADMAP.md): what's planned
 

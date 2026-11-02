@@ -41,7 +41,7 @@ int hal_battery_percent();
 bool hal_usb_connected();
 // Screen off ("dozing"): touches read less often. The sim: nothing.
 void hal_doze(bool on);
-// Light sleep for up to `max_ms`, until then or a touch/button. Returns false where unsupported (the
+// Light sleep for up to `max_ms`, until then or a touch. Returns false where unsupported (the
 // sim) or refused (a wake pin already active), without sleeping.
 enum class HalWake { Timer, Input };
 bool hal_light_sleep(uint32_t max_ms, HalWake &wake);

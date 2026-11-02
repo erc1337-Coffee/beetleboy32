@@ -25,12 +25,6 @@
 #define PIN_SYS_EN   41
 #define PIN_SYS_OUT  40
 
-// External buttons: wire each one between the GPIO and GND (internal pull-up, active low).
-// Free header pins are 2, 3, 17, 18 (+43/44 UART). GPIO3 is a strapping pin, so it's left spare.
-#define PIN_BTN_CANCEL 2
-#define PIN_BTN_OK     17
-// No Next button: GPIO18 drives the LEDs. Define PIN_BTN_NEXT on a free pin to add one.
-
 // RGB LEDs (WS2812B), powered from 3V3: data on this pin, chained.
 #define PIN_LEDS  18
 #define LED_COUNT 4

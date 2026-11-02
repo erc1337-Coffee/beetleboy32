@@ -16,10 +16,10 @@ enum class InputAction : uint8_t {
   SwipeRight,
   SwipeUp,
   SwipeDown,
-  Confirm,  // button OK, on a screen without widgets
-  Next,     // button Next, on a screen without widgets
-  Back,     // button Cancel (short press), or the on-screen Back button
-  Reset,    // button Cancel held for LONG_PRESS_MS
+  Confirm,  // button OK (sim key), on a screen without widgets
+  Next,     // button Next (sim key), on a screen without widgets
+  Back,     // the on-screen Back button, or button Cancel (sim key)
+  Reset,    // button Cancel (sim key) held for LONG_PRESS_MS
   Hold,     // touch: held TOUCH_HOLD_MS anywhere, widgets included (the hidden picture)
 };
 
@@ -30,7 +30,8 @@ struct InputEvent {
   lv_point_t point = {0, 0};  // screen position, for InputSource::Touch
 };
 
-// The single entry point for user input: physical buttons and the touchscreen.
+// The single entry point for user input: the touchscreen, and buttons (the board has none: the
+// simulator's keys stand in, for debugging).
 //  - Widgets (anything focusable: buttons, menu tiles) handle their own clicks, so a widget's click
 //    handler runs the same whether it was tapped or pressed with OK; Next moves focus between them.
 //  - Everything else becomes an InputEvent passed to `handler` (the App, which offers it to the top
@@ -45,7 +46,7 @@ class Controller {
   // The finger and buttons now down do nothing until lifted (e.g. what woke the screen), nor do
   // buttons pressed in the next moment (the press that woke it may not be debounced yet).
   void swallowInput();
-  // Screen off: the buttons only wake it. darkPress() is true once after one goes down.
+  // Screen off: buttons only wake it. darkPress() is true once after one goes down.
   void setDark(bool dark) {
     dark_ = dark;
     darkPress_ = false;  // a press from before doesn't count

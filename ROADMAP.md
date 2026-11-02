@@ -40,4 +40,4 @@ Goal: stored secrets (cookies, refresh token, Wi-Fi password) not readable from 
 ## User-Experience
 
 - [ ] Demo website
-- [ ] Web Documentation
+- [x] Web Documentation

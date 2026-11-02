@@ -8,7 +8,7 @@
 
 // A grid of whitish tiles (2 per row, scrolls past 4) with a Back button, and the battery top right
 // (a lightning while USB is connected), the bell left of it. Tiles can be greyed out until they're usable.
-// Opened on top of whatever is showing; Back (button, Cancel or the on-screen one) returns to it.
+// Opened on top of whatever is showing; Back returns to it.
 class MenuScreen : public Screen {
  public:
   struct Item {

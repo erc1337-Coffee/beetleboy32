@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 
-// Physical buttons as a bitmask. Implemented per platform: GPIOs on the board, keyboard in the sim.
+// Buttons as a bitmask. The board has none (it reads nothing); the simulator's keys stand in, for debugging.
 enum Button : uint8_t {
   BTN_CANCEL = 1 << 0,
   BTN_OK = 1 << 1,

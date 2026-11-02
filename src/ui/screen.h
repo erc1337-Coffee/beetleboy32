@@ -30,7 +30,7 @@ class Screen {
   virtual void build(lv_obj_t *root) = 0;
   App &app() { return app_; }
   lv_obj_t *root() const { return root_; }  // the screen object build() got; nullptr while not built
-  // "‹ Back" button in the top-left corner; sends the same Back event as the physical Cancel button.
+  // "‹ Back" button in the top-left corner; sends a Back event.
   // Tile: whitish tile. Text: white text only, for screens whose picture is the background.
   enum class BackLook { Tile, Text };
   lv_obj_t *addBackButton(lv_obj_t *parent, BackLook look = BackLook::Tile);

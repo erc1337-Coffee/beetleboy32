@@ -10,6 +10,8 @@ src/assets/
 sim_data/
 *.curl
 *.log
+
+# The docs website, built by scripts/docs/build.py (./run docs)
 website/
 
 # The demo video's working files, made and kept locally (demo/tools/README.md)

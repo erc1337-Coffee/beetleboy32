@@ -16,7 +16,7 @@ class HomeScreen : public Screen {
   };
 
   const char *name() const override { return "home"; }
-  bool onInput(const InputEvent &event) override;  // tap or OK opens the menu
+  bool onInput(const InputEvent &event) override;  // a tap opens the menu
   void onShow() override;  // re-reads the counters (throttled by App)
   void update() override;  // counters and ready dots: cheese to claim, a trap or hunt available
 

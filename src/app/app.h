@@ -484,7 +484,7 @@ class App {
 
   // Power. Awake, or ScreenOff after settings_.screenOffS without input: Wi-Fi stays up, touches
   // are read less often and pokes checked less often. After settings_.sleepAfterS the chip
-  // light-sleeps with Wi-Fi off until the next cooldown ends or a touch or button wakes it.
+  // light-sleeps with Wi-Fi off until the next cooldown ends or a touch wakes it.
   enum class Power { Awake, ScreenOff };
   Power power_ = Power::Awake;
   bool lightSleepWorks_ = true;  // false once the platform said no (the sim)

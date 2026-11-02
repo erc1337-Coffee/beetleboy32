@@ -132,13 +132,13 @@ void App::reconnectWifi(const char *message) {
 // --- Power ------------------------------------------------------------------------------------
 
 void App::updatePower() {
-  uint32_t idle = lv_display_get_inactive_time(nullptr);  // touches, and buttons (Controller)
+  uint32_t idle = lv_display_get_inactive_time(nullptr);  // touches
   if (power_ == Power::Awake) {
     if (idle >= (uint32_t)settings_.screenOffS * 1000) screenOff();
     return;
   }
   if (controller_.darkPress() || idle < (uint32_t)settings_.screenOffS * 1000) {  // touched while dark
-    hal_log("[app] screen on: touch/button\n");
+    hal_log("[app] screen on: touch\n");
     wakeScreen();
   } else if (idle >= (uint32_t)settings_.sleepAfterS * 1000 && lightSleepWorks_ && link_ == Link::Up && beetleTask_ == BeetleTask::None) {
     sleepUntilNextCooldown();
@@ -191,7 +191,7 @@ void App::sleepUntilNextCooldown() {
     lightSleepWorks_ = false;
     return;
   }
-  hal_log("[app] woke up (%s)\n", wake == HalWake::Input ? "touch/button" : "timer");
+  hal_log("[app] woke up (%s)\n", wake == HalWake::Input ? "touch" : "timer");
   if (wake == HalWake::Input) wakeScreen();
   // Timer: the cooldown check wakes the screen once it's ready; a mere check-in sleeps again.
 }

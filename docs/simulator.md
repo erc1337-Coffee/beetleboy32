@@ -1,6 +1,8 @@
 # Simulator
 
-The simulator runs the whole app in a 280×240 window on a Mac: the same screens, setup flow and game logic as the board, against the real remilia.net. Only the hardware is faked (Wi-Fi, buttons, the buzzer, the LEDs).
+The simulator runs the whole app in a 280×240 window on a Mac: the same screens, setup flow and game logic as the board, against the real remilia.net. Only the hardware is faked (Wi-Fi, the buzzer, the LEDs).
+
+![The simulator window](media/sim_window.webp)
 
 ## Requirements
 
@@ -16,11 +18,13 @@ The simulator runs the whole app in a 280×240 window on a Mac: the same screens
 
 It builds what changed, then opens the window.
 
+The device has no buttons: Esc, Enter and Tab stand in for some, for debugging.
+
 | Input | Does |
 |---|---|
 | Mouse | Touch |
-| Esc | Cancel (hold 3 s: factory reset) |
-| Enter / Tab | OK / Next |
+| Esc | Back (hold 3 s: factory reset) |
+| Enter / Tab | Press the focused button / focus the next one |
 | **J** | A phone joins or leaves the setup network |
 | **S** / **W** | Submit setup without the form (good / wrong Wi-Fi password) |
 | **D** | Drop or restore the Wi-Fi link |
@@ -48,3 +52,12 @@ Downloaded images (avatars, item icons) are cached in `sim_data/cache/`.
 | `SDL_VIDEODRIVER=offscreen` | No window (with `BB_SCREENSHOT`, for scripts) |
 
 Example: `BB_HOUR=22 ./run sim`.
+
+## Screens
+
+![Home](media/screen_home.png "Home")
+![Menu](media/screen_menu.png "Menu")
+![Notifications](media/screen_notifications.png "Notifications")
+![Profile picture](media/screen_pfp_picker.png "Profile picture")
+![Settings](media/screen_settings.png "Settings")
+![About](media/screen_about.png "About")
