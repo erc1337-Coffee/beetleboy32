@@ -49,6 +49,9 @@ static constexpr uint32_t SETUP_TIMEOUT_TOAST_MS = 4000;
 // longer each time, before the error screen asks the user.
 static constexpr int AUTO_RETRIES = 3;
 static constexpr uint32_t RETRY_DELAY_MS = 2000;  // doubled after each try
+// The profile (picture, name, bio, theme) is read again when Home shows or the screen wakes, at most
+// this often: edits made on the website show up within it.
+static constexpr uint32_t PROFILE_REFRESH_MS = 5 * 60 * 1000;
 // The PFP picker: 3 a row, as on the website, 6 a page.
 static constexpr int32_t PFP_TILE = 72;  // px
 static constexpr int PFP_PAGE_SIZE = 6;
@@ -455,6 +458,7 @@ void App::updateLoadingProfile() {
   if (o.result == AuthResult::Ok) {
     autoRetries_ = 0;
     save_profile(*store_, *o.profile);
+    profileLoadedAt_ = hal_millis();
     enterOnline(std::move(o.profile));
   } else {
     // Not auto-retrying a refused token: if the API's auth changed, that would loop forever.
@@ -566,9 +570,20 @@ void App::updateOnline() {
 }
 
 void App::reloadProfile() {
+  if (profileReloading_) {  // its answer may predate what changed: read again after it
+    profileReloadAgain_ = true;
+    return;
+  }
+  profileReloading_ = true;
+  profileLoadedAt_ = hal_millis();
   AssetCache *cache = cache_.get();
   startAuthed(profileJob_, [cache](HttpClient &http, const std::string &token) { return fetchProfile(http, *cache, token); },
-              [] {});  // no token: the saved card stays, and the beetle read retries the token
+              [this] { profileReloading_ = false; });  // no token: the saved card stays, and the beetle read retries the token
+}
+
+void App::refreshProfile() {
+  if (!profile_ || link_ != Link::Up || hal_millis() - profileLoadedAt_ < PROFILE_REFRESH_MS) return;
+  reloadProfile();
 }
 
 // A fresh load over the saved card: Home redraws only if something it shows changed.
@@ -636,7 +651,12 @@ void App::pollProfile() {
   ProfileOutcome reloaded;
   if (profileJob_.take(reloaded)) {
     hal_log("[app] profile reload: %s\n", reloaded.detail.c_str());
+    profileReloading_ = false;
     if (reloaded.result == AuthResult::Ok) applyProfile(*reloaded.profile);  // else the saved card stays
+    if (profileReloadAgain_) {
+      profileReloadAgain_ = false;
+      reloadProfile();
+    }
   }
 }
 

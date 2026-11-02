@@ -150,6 +150,9 @@ class App {
   // Re-reads the counters and cooldowns, unless they were read under 3 s ago (any answer counts,
   // claims included) or a task is running: screens call it when shown, as often as they like.
   void refreshBeetle();
+  // Re-reads the profile (picture, name, bio, theme) if it's PROFILE_REFRESH_MS old: changes made on
+  // the website. Home calls it when shown, the screen when it wakes.
+  void refreshProfile();
   // One craft (Craft screen); its outcome comes as a BeetleResult, with `craft` filled in.
   void craft(const CraftRequest &request);
   // The last finished action (not refreshes), for the result animation; the seq changes with each.
@@ -413,6 +416,8 @@ class App {
   Job<ProfileOutcome> profileJob_;
   Job<AvatarOutcome> avatarJob_;
   bool avatarFetching_ = false;
+  bool profileReloading_ = false, profileReloadAgain_ = false;
+  uint32_t profileLoadedAt_ = 0;  // hal_millis() of the last profile read (started)
   Job<ThemeOutcome> themeJob_;
   SaveState themeSave_ = SaveState::Idle;
   Job<PfpOutcome> pfpJob_;

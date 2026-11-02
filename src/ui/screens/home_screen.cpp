@@ -200,7 +200,10 @@ void HomeScreen::build(lv_obj_t *root) {
   make_bio_plate(root, profile_.bio);
 }
 
-void HomeScreen::onShow() { app().refreshBeetle(); }  // cheap: skipped if read moments ago
+void HomeScreen::onShow() {  // cheap: each is skipped if read recently
+  app().refreshBeetle();
+  app().refreshProfile();
+}
 
 // Live: a refresh can land while Home is on screen.
 void HomeScreen::update() {

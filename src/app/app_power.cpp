@@ -95,6 +95,7 @@ void App::updateLink() {
         }
         joiningWifi_ = wifiOutage_ = false;
         refreshBeetle();
+        refreshProfile();
       } else if (wifi_->state() == WifiStation::State::Failed && joiningWifi_) {
         // The new network didn't work: back to the known ones, quietly unless they fail too.
         hal_log("[app] joining failed: %s\n", wifi_->failureReason());
@@ -171,6 +172,7 @@ void App::wakeScreen() {
   hal_display_sleep(false);
   hal_set_brightness(settings_.brightness);
   lv_display_trigger_activity(nullptr);  // restart the idle timer
+  refreshProfile();  // edits made on the website while it was dark
 }
 
 void App::sleepUntilNextCooldown() {
