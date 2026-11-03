@@ -56,6 +56,9 @@ static constexpr uint32_t USB_FRAME_CHECK_MS = 5;  // a few USB frames apart
 
 // Jobs (HTTP, TLS handshakes, PNG decoding) run on core 0 with Wi-Fi, below the UI loop's priority:
 // on the UI's core they'd stop it mid-frame, leaving half-drawn widgets on screen.
+// Above the idle task, so they get all of core 0 that Wi-Fi leaves: a cold TLS handshake alone takes
+// 2-4 s, and a wake starts several at once. Core 0's idle task can then wait well past the task
+// watchdog's 5 s, which isn't a hang here: hal_init() takes it off the watchdog (as core 1's is).
 static constexpr int JOB_CORE = 0, JOB_PRIO = 1;  // loopTask: core 1, priority 1
 
 // Before this (Nov 2023), the clock hasn't been set: the chip boots at 1970.
@@ -106,10 +109,26 @@ static void touch_read_cb(lv_indev_t *, lv_indev_data_t *data) {
   }
 }
 
+// Why the last run ended. A crash also leaves a core dump in the coredump partition.
+static const char *reset_reason() {
+  switch (esp_reset_reason()) {
+    case ESP_RST_POWERON: return "power on";
+    case ESP_RST_SW: return "restart";
+    case ESP_RST_PANIC: return "crash";
+    case ESP_RST_INT_WDT: return "interrupt watchdog";
+    case ESP_RST_TASK_WDT: return "task watchdog";
+    case ESP_RST_WDT: return "watchdog";
+    case ESP_RST_BROWNOUT: return "brownout";
+    case ESP_RST_DEEPSLEEP: return "deep sleep";
+    default: return "other";
+  }
+}
+
 void hal_init() {
   heap_caps_malloc_extmem_enable(INTERNAL_MALLOC_MAX);
   Serial.begin(115200);
-  hal_log("boot\n");
+  hal_log("boot (last reset: %s)\n", reset_reason());
+  disableCore0WDT();  // jobs keep core 0's idle task waiting by design (see JOB_PRIO)
 
   tft.init();
   tft.setRotation(DISPLAY_ROTATION);
