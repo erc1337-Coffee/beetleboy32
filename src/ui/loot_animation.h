@@ -17,6 +17,11 @@ struct LootIcon {
 // Returns how long it plays, in ms.
 uint32_t play_loot(lv_obj_t *parent, const std::vector<LootIcon> &icons, lv_point_t center);
 
+// Fast-forwards the loot and messages playing over `parent`, so the next can play alone: each item
+// plays what's left of its timeline in a fraction of a second (one not on screen yet is dropped),
+// each message fades out.
+void hurry_loot(lv_obj_t *parent);
+
 // A shower of `icon` falling across the whole screen, from above its top edge to below its bottom
 // (~3 s, sizes and speeds vary per drop), then it cleans itself up. E.g. cheese on a cheese claim.
 // Returns how long it plays, in ms.

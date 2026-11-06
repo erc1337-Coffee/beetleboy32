@@ -123,6 +123,7 @@ void HuntScreen::showResult() {
   const App::BeetleResult &result = app().beetleResult();
   if (result.task != App::BeetleTask::Trap && result.task != App::BeetleTask::Hunt) return;
   if (result.rateLimited) return;  // the popup covers it
+  hurry_loot(root());  // the last result, if still playing: this one plays alone
   if (result.items.empty()) {  // a claim or hunt can come back empty-handed
     play_loot_message(root(), result.ok ? "Nothing.." : "Error", LOOT_CENTER);
     return;
@@ -138,7 +139,9 @@ void HuntScreen::showResult() {
 
 void HuntScreen::onBeetle(lv_event_t *e) {
   auto *self = static_cast<HuntScreen *>(lv_event_get_user_data(e));
-  switch (self->currentLook()) {
+  Look look = self->currentLook();
+  if (look == Look::Claim || look == Look::Hunt) hurry_loot(self->root());  // out of the way of what this wins
+  switch (look) {
     case Look::Claim: self->app().catchBeetle(); break;
     case Look::Hunt: self->app().huntBeetle(); break;
     default: play_sound(Sound::Error); break;  // cooling down (replaces the press sound)

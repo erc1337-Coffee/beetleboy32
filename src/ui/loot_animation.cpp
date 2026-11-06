@@ -29,6 +29,9 @@ static constexpr int32_t SIDE_OFFSET = 72, SIDE_STEP = 48;  // secondary icons, 
 static constexpr lv_opa_t GLARE_OPA = LV_OPA_60;
 
 static constexpr int32_t MESSAGE_HOLD_MS = 1000, MESSAGE_FADE_MS = 500;
+// hurry_loot(): an item plays the rest of its timeline in this (a fraction of it for what's left), a
+// message fades out in HURRY_FADE_MS.
+static constexpr int32_t HURRY_MS = 400, HURRY_FADE_MS = 200;
 // A boxed message: dark text on a white, nearly square box (readable over a busy picture).
 static constexpr uint32_t BOX_BG = 0xffffff, BOX_INK = theme::INK, BOX_BORDER = theme::INK;
 static constexpr int32_t BOX_RADIUS = 2, BOX_BORDER_W = 2, BOX_PAD_HOR = 10, BOX_PAD_VER = 5;
@@ -53,6 +56,8 @@ struct Motion {
   int32_t glare_at, glare_ms;   // within the wiggle
   int32_t hop, drift, spin;     // px, px, 0.1 degree
   int32_t turn;                 // 0.1 degree, spun off while growing (0: no spin)
+  bool started = false;         // its delay is over: it's on screen
+  int32_t at = 0;               // ms into the timeline, as last drawn
   int32_t total() const { return grow_ms + wiggle_ms + fall_ms; }
 };
 
@@ -93,7 +98,8 @@ static void step(void *var, int32_t t) {
   auto *item = static_cast<lv_obj_t *>(var);
   lv_obj_t *icon = lv_obj_get_child(item, 0), *band = lv_obj_get_child(item, 1);
   lv_obj_t *shine = lv_obj_get_child(band, 0);
-  const Motion &m = *static_cast<const Motion *>(lv_obj_get_user_data(item));
+  Motion &m = *static_cast<Motion *>(lv_obj_get_user_data(item));
+  m.at = t;
   const Geometry g = geometry(static_cast<const lv_image_dsc_t *>(lv_image_get_src(icon)), m.rest);
 
   float scale = 1, x = 0, y = 0, spin = 0;
@@ -186,6 +192,9 @@ static uint32_t make_item(lv_obj_t *parent, const lv_image_dsc_t *image, bool se
   lv_anim_set_duration(&a, motion->total());
   lv_anim_set_delay(&a, delay_ms);
   lv_anim_set_path_cb(&a, lv_anim_path_linear);  // the phases ease themselves
+  lv_anim_set_start_cb(&a, [](lv_anim_t *started) {
+    static_cast<Motion *>(lv_obj_get_user_data(static_cast<lv_obj_t *>(started->var)))->started = true;
+  });
   lv_anim_set_completed_cb(&a, delete_when_done);
   lv_anim_start(&a);
   return delay_ms + motion->total();
@@ -268,6 +277,38 @@ uint32_t play_rain(lv_obj_t *parent, const lv_image_dsc_t *icon) {
 
 static void fade(void *var, int32_t opa) {
   lv_obj_set_style_opa(static_cast<lv_obj_t *>(var), (lv_opa_t)opa, 0);
+}
+
+// Runs `exec` on `obj` from `from` to `to` over `ms`, then deletes `obj`.
+static void play_out(lv_obj_t *obj, lv_anim_exec_xcb_t exec, int32_t from, int32_t to, uint32_t ms) {
+  lv_anim_t a;
+  lv_anim_init(&a);
+  lv_anim_set_var(&a, obj);
+  lv_anim_set_exec_cb(&a, exec);
+  lv_anim_set_values(&a, from, to);
+  lv_anim_set_duration(&a, ms > 0 ? ms : 1);
+  lv_anim_set_completed_cb(&a, delete_when_done);
+  lv_anim_start(&a);
+}
+
+void hurry_loot(lv_obj_t *parent) {
+  // Backwards: deleting a child shifts the ones after it.
+  for (int32_t i = (int32_t)lv_obj_get_child_count(parent) - 1; i >= 0; i--) {
+    lv_obj_t *child = lv_obj_get_child(parent, i);
+    if (lv_anim_get(child, step)) {
+      const Motion &m = *static_cast<const Motion *>(lv_obj_get_user_data(child));
+      if (!m.started) {  // never seen: just gone
+        lv_obj_delete(child);
+        continue;
+      }
+      const int32_t from = m.at, to = m.total();
+      lv_anim_delete(child, step);
+      play_out(child, step, from, to, (uint32_t)(HURRY_MS * (to - from) / to));
+    } else if (lv_anim_get(child, fade)) {
+      lv_anim_delete(child, fade);
+      play_out(child, fade, lv_obj_get_style_opa(child, 0), LV_OPA_TRANSP, HURRY_FADE_MS);
+    }
+  }
 }
 
 void play_loot_message(lv_obj_t *parent, const char *text, lv_point_t center, bool boxed) {
